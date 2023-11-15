@@ -1,17 +1,17 @@
 <template>
-  <h1 id="title">Hello</h1>
+  <MigrantWorkers/>
 </template>
 
+<script>
+import MigrantWorkers from './components/MigrantWorkers.vue';
 
 export default {
   name: 'App',
   components: {
+    MigrantWorkers
   }
 }
+</script>
 
 <style>
-#title {
-  margin: 0
-}
-
 </style>
