@@ -30,6 +30,7 @@
       <span class=".tip">午休时间</span>
       <el-time-select
         v-model="restTimeStart"
+        :min-time="workTimeStart"
         :max-time="restTimeEnd"
         class="time-select"
         placeholder="开始时间"
@@ -42,6 +43,7 @@
       <el-time-select
         v-model="restTimeEnd"
         :min-time="restTimeStart"
+        :max-time="workTimeEnd"
         class="time-select"
         placeholder="结束时间"
         start="00:00"
