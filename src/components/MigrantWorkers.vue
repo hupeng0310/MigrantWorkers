@@ -15,6 +15,7 @@
         end="23:45"
         default-value="new Date()"
         is-range
+        @change="saveConfig"
       />
       <el-time-select
         v-model="workTimeEnd"
@@ -25,6 +26,7 @@
         step="00:15"
         end="23:45"
         is-range
+        @change="saveConfig"
       />
     </div>
     <div class="form_block">
@@ -40,6 +42,7 @@
         end="23:45"
         default-value="new Date()"
         is-range
+        @change="saveConfig"
       />
       <el-time-select
         v-model="restTimeEnd"
@@ -51,6 +54,7 @@
         step="00:15"
         end="23:45"
         is-range
+        @change="saveConfig"
       />
     </div>
     <el-divider class="divider" content-position="left">时间图表</el-divider>
@@ -125,9 +129,32 @@ import { onMounted, onUnmounted, ref } from 'vue'
         return percent.toFixed(2)
       }
 
+      const saveConfig = () => {
+        localStorage.setItem("workTimeStart", workTimeStart.value);
+        localStorage.setItem("workTimeEnd", workTimeEnd.value);
+        localStorage.setItem("restTimeStart", restTimeStart.value);
+        localStorage.setItem("restTimeEnd", restTimeEnd.value);
+      }
+
+      const restoreConfig = () => {
+        if (localStorage.getItem("workTimeStart")) {
+          workTimeStart.value = localStorage.getItem("workTimeStart");
+        }
+        if (localStorage.getItem("workTimeEnd")) {
+          workTimeEnd.value = localStorage.getItem("workTimeEnd");
+        }
+        if (localStorage.getItem("restTimeStart")) {
+          restTimeStart.value = localStorage.getItem("restTimeStart");
+        }
+        if (localStorage.getItem("restTimeEnd")) {
+          restTimeEnd.value = localStorage.getItem("restTimeEnd");
+        }
+      }
+
       onMounted(() => {
-        currentTime = ref(getCurrentTime())
-        flushInterval = setInterval(flushTime, 1000)
+        currentTime = ref(getCurrentTime());
+        flushInterval = setInterval(flushTime, 1000);
+        restoreConfig();
       })
 
       onUnmounted(() => {
@@ -144,7 +171,8 @@ import { onMounted, onUnmounted, ref } from 'vue'
         progressColor,
         currentTime,
         parseTimeSelectDate,
-        progressPercentage
+        progressPercentage,
+        saveConfig
       };
     }
   }
