@@ -3,7 +3,7 @@
     <div class="title">摸鱼时间到</div>
     <el-divider class="divider" content-position="left">时间配置</el-divider>
     <div class="form_block">
-      <span>工作时间</span>
+      <span class=".tip">工作时间</span>
       <el-time-select
         v-model="workTimeStart"
         :max-time="workTimeEnd"
@@ -27,7 +27,7 @@
       />
     </div>
     <div class="form_block">
-      <span>午休时间</span>
+      <span class=".tip">午休时间</span>
       <el-time-select
         v-model="restTimeStart"
         :max-time="restTimeEnd"
@@ -50,24 +50,89 @@
         is-range
       />
     </div>
+    <el-divider class="divider" content-position="left">时间图表</el-divider>
+    <div class="form_block">
+      <div class="progress_container">
+        <div class="chart_span">午休进度条</div>
+        <el-progress :percentage="restPercentage" :text-inside="true" :stroke-width="20" status="success" />
+      </div>
+      <div class="progress_container">
+        <div class="chart_span">下班进度条</div>
+        <el-progress :percentage="workEndPercentage" :text-inside="true" :stroke-width="20" status="success" />
+      </div>
+    </div>
   </div>
 </template>
   
 <script>
-import { ref } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
   export default {
     name: 'MigrantWorkers',
     setup() {
       const workTimeStart = ref('09:00');
       const workTimeEnd = ref('18:00');
-      const restTimeStart = ref('12:00')
-      const restTimeEnd = ref('13:00')
+      const restTimeStart = ref('12:00');
+      const restTimeEnd = ref('13:00');
+
+      const restPercentage = ref(0);
+      const workEndPercentage = ref(0)
+
+      let currentTime = ref(new Date())
+
+      let flushInterval;
+
+      const getCurrentTime = () => {
+        var currentDate = new Date();
+        currentDate.setFullYear(1900);
+        currentDate.setMonth(1);
+        currentDate.setDate(1)
+        return currentDate;
+      }
+
+      const parseTimeSelectDate = (str) => {
+        var splited = str.split(':');
+        var hour = splited[0];
+        var minutes = splited[1];
+        var date = new Date('1900', '1', '1', hour, minutes, '0');
+        return date;
+      }
+
+      const flushTime = () => {
+        currentTime.value = getCurrentTime();
+        restPercentage.value = progressPercentage(parseTimeSelectDate(workTimeStart.value), parseTimeSelectDate(restTimeStart.value));
+        workEndPercentage.value = progressPercentage(parseTimeSelectDate(workTimeStart.value), parseTimeSelectDate(workTimeEnd.value));
+      }
+
+      const progressPercentage = (startTime, endTime) => {
+        let percent = ((currentTime.value - startTime) / (endTime - startTime)) * 100;
+        if (isNaN(percent) || percent < 0) {
+          percent = 0;
+        }
+        if (percent > 100.0) {
+          percent = 100;
+        }
+        return percent.toFixed(2)
+      }
+
+      onMounted(() => {
+        currentTime = ref(getCurrentTime())
+        flushInterval = setInterval(flushTime, 1000)
+      })
+
+      onUnmounted(() => {
+        clearInterval(flushInterval)
+      })
 
       return {
         workTimeStart,
         workTimeEnd,
         restTimeStart,
-        restTimeEnd
+        restTimeEnd,
+        restPercentage,
+        workEndPercentage,
+        currentTime,
+        parseTimeSelectDate,
+        progressPercentage
       };
     }
   }
@@ -90,7 +155,7 @@ import { ref } from 'vue'
   border-color: skyblue;
 }
 
-span {
+.tip {
   margin-right: 10px;
 }
 
@@ -101,6 +166,14 @@ span {
 .form_block{
   padding-left: 10px;
   margin-bottom: 10px;
+}
+
+.progress_container {
+  margin-bottom: 20px;
+}
+
+.chart_span {
+  padding-bottom: 10px;
 }
 
 </style>
