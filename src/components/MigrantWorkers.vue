@@ -1,7 +1,7 @@
 <template>
 
 <div class="main_container">
-    <div class="title">摸鱼时间到</div>
+    <div class="title">休息时间到</div>
     <el-divider class="divider" content-position="left">时间配置</el-divider>
     <div class="form_block">
       <span class=".tip">工作时间</span>
