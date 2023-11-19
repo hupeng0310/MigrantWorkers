@@ -1,5 +1,6 @@
 <template>
-  <div class="main_container">
+
+<div class="main_container">
     <div class="title">摸鱼时间到</div>
     <el-divider class="divider" content-position="left">时间配置</el-divider>
     <div class="form_block">
@@ -56,11 +57,11 @@
     <div class="form_block">
       <div class="progress_container">
         <div class="chart_span">午休进度条</div>
-        <el-progress :percentage="restPercentage" :text-inside="true" :stroke-width="20" status="success" />
+        <el-progress :percentage="restPercentage" :text-inside="true" :stroke-width="20" status="success" :color="progressColor" />
       </div>
       <div class="progress_container">
         <div class="chart_span">下班进度条</div>
-        <el-progress :percentage="workEndPercentage" :text-inside="true" :stroke-width="20" status="success" />
+        <el-progress :percentage="workEndPercentage" :text-inside="true" :stroke-width="20" status="success" :color="progressColor" />
       </div>
     </div>
   </div>
@@ -77,9 +78,17 @@ import { onMounted, onUnmounted, ref } from 'vue'
       const restTimeEnd = ref('13:00');
 
       const restPercentage = ref(0);
-      const workEndPercentage = ref(0)
+      const workEndPercentage = ref(0);
 
-      let currentTime = ref(new Date())
+      const progressColor = [
+        { color: '#f56c6c', percentage: 20 },
+        { color: '#e6a23c', percentage: 40 },
+        { color: '#5cb87a', percentage: 60 },
+        { color: '#1989fa', percentage: 80 },
+        { color: '#6f7ad3', percentage: 100 },
+      ]
+
+      let currentTime = ref(new Date());
 
       let flushInterval;
 
@@ -132,6 +141,7 @@ import { onMounted, onUnmounted, ref } from 'vue'
         restTimeEnd,
         restPercentage,
         workEndPercentage,
+        progressColor,
         currentTime,
         parseTimeSelectDate,
         progressPercentage
